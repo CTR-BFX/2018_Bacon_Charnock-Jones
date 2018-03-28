@@ -15,7 +15,7 @@ Bacon, W.A. <sup>‡,1,2,3</sup>, Hamilton, R.S. <sup>‡,2,3</sup>, Kieckbusch,
 
 To be added on paper acceptance
 
-![T-cell_tSNE](Images/T-cell_tSNE.png?raw=true=100x)
+![T-cell_tSNE](Images/T-cell_tSNE.png?raw=true=50x)
 
 
 ### Data Processing ###
