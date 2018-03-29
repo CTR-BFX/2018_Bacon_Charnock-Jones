@@ -23,6 +23,8 @@ Raw Fastq files are converted to uBAM using PicardTools:FastqToSam (v2.9.0) and 
 
 Custom tools have been developed for assessing quality control metrics in a standardised report format, determining cell gene counts and combining digital expression matrices from different sequencing runs. All tools are freely available at https://github.com/CTR-BFX/2018_Bacon_Charnock-Jones along with scripts to recreate figures X,Y,Z.
 
+![Processing](Images/Processing.png?raw=true=50x)
+
 Seurat (v2.0) was used to calculate PCA, find clusters, cluster gene markers and create tSNE dimensionality reduction plots.
 
 Normalisation, batch correction and cell cycle contributions are performed with SCRAN (v1.4.5)
