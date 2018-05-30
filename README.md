@@ -76,11 +76,23 @@ Cluster By Size | Cluster Paper Number | WT  | P0   | Cell Type
 
 ### Scripts to reproduce paper figures ###
 
-The provided R script assumes the script is placed in a directory containing XXXXX. The script can be run interactively in R-studio or as a batch using Rscript. Note that some of the figures in the manuscript have had some label positions moved manually to prevent overlaps. R package versions are listed int he table below
+The provided R scripts assumes the script is placed in a directory containing XXXXX. The script can be run interactively in R-studio or as a batch using Rscript. Note that some of the figures in the manuscript have had some label positions moved manually to prevent overlaps. R package versions are listed int he table below
 
-Figure    | Description | Output Filename
---------- | ----------- | ------------------------
-Figure 1  | Some Plot   | Figure1.pdf
+#### DEM to Robj ####
+
+    dropseq_seurat_splitDEMs.R
+
+#### tSNE and Figure Generation ####
+
+    dropseq_seurat_splitDEMs_Plots.R
+
+Figure        | Description | Output Filename
+------------- | ----------- | ------------------------
+ 2            | Some Plot   | T-Cell.Figure.2.pdf
+ 3            | Some Plot   | T-Cell.Figure.3.pdf
+ 5A           | Some Plot   | T-Cell.Figure.5A.pdf
+ Supp Fig 1   | Some Plot   | T-Cell.Figure.Supp1.simplified.pdf
+ Supp Table 1 | Some Plot   | T-Cell.Table.Supp.SeqMetrics.xlsx
 
 ### Sample Table ###
 
