@@ -28,6 +28,10 @@ Custom tools have been developed for assessing quality control metrics in a stan
 
 ![Processing](Images/Processing.png?raw=true=50x)
 
+text
+
+<img src="Images/Processing.png" width="100">
+
 Seurat (v2.0) was used to calculate PCA, find clusters, cluster gene markers and create tSNE dimensionality reduction plots.
 
 Normalisation, batch correction and cell cycle contributions are performed with SCRAN (v1.4.5)
