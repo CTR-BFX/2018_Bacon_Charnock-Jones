@@ -92,7 +92,7 @@ Figure        | Description | Output Filename
  3            | Some Plot   | T-Cell.Figure.3.pdf
  5A           | Some Plot   | T-Cell.Figure.5A.pdf
  Supp Fig 1   | Some Plot   | T-Cell.Figure.Supp1.simplified.pdf
- Supp Table 1 | Some Plot   | T-Cell.Table.Supp.SeqMetrics.xlsx
+ Supp Table 1 | Some Plot   | T-Cell.Table.Supp1.xlsx
 
 ### Sample Table ###
 
