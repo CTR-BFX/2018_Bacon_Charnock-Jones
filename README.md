@@ -18,7 +18,7 @@ Bacon, W.A., Hamilton, R.S., Kieckbusch, J., Yu, Z.,  Abell, C., Colucci, F. and
 
 To be added on paper acceptance
 
-![T-cell_tSNE](Images/T-cell_tSNE.png?raw=true=50x)
+<img src="Images/T-cell_tSNE.png" width="500">
 
 
 ### Data Processing ###
@@ -26,11 +26,7 @@ Raw Fastq files are converted to uBAM using PicardTools:FastqToSam (v2.9.0) and 
 
 Custom tools have been developed for assessing quality control metrics in a standardised report format, determining cell gene counts and combining digital expression matrices from different sequencing runs. All tools are freely available at https://github.com/CTR-BFX/2018_Bacon_Charnock-Jones along with scripts to recreate figures X,Y,Z.
 
-![Processing](Images/Processing.png?raw=true=50x)
-
-text
-
-<img src="Images/Processing.png" width="100">
+<img src="Images/Processing.png" width="500">
 
 Seurat (v2.0) was used to calculate PCA, find clusters, cluster gene markers and create tSNE dimensionality reduction plots.
 
@@ -61,7 +57,7 @@ SLX-7632 | N707 | PO | 26807105 | 18534932 | 69.1 | 5136585 | 19.2 | 235983 | 0.
 
 #### Sample Correlation By Gene Coverage ####
 
-![SampleCorrelation](Images/GeneCoverageCorrelation.png?raw=true&s=100)
+<img src="Images/GeneCoverageCorrelation.png" width="250">
 
 
 #### Cluster Cell Numbers	####
