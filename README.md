@@ -57,7 +57,7 @@ SLX-7632 | N707 | PO | 26807105 | 18534932 | 69.1 | 5136585 | 19.2 | 235983 | 0.
 
 #### Sample Correlation By Gene Coverage ####
 
-![Sample Correlation](Images/GeneCoverageCorrelation.png?raw=true | width=100)
+![SampleCorrelation](Images/GeneCoverageCorrelation.png?raw=true&s=100)
 
 
 #### Cluster Cell Numbers	####
