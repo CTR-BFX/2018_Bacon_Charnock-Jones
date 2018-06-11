@@ -22,9 +22,12 @@ To be added on paper acceptance
 
 
 ### Data Processing ###
-Raw Fastq files are converted to uBAM using PicardTools:FastqToSam (v2.9.0) and aligned with STAR (v020201) to the mouse reference genome (DropSeq Version ) via DropSeqTools (v1.12) which also provides tools to perform filtering and annotation of the alignment files.
+Raw Fastq files are demultiplexed ([dropseq_demultiplex.sh](dropseq_demultiplex.sh)) using the Nextera indices and then converted to uBAM using PicardTools:FastqToSam (v2.9.0). Quality control, alignment (STAR v020201) gene quantification and final matrix generation were performed using DropSeqTools (v1.12 http://mccarrolllab.com/dropseq/). Alignments were performed against the mouse reference genome (mm10 available from http://mccarrolllab.com/dropseq/). The resulting digital expression matrix (DEM) was imported into Seurat (v2.3.0) for downstream analysis.
 
-Custom tools have been developed for assessing quality control metrics in a standardised report format, determining cell gene counts and combining digital expression matrices from different sequencing runs. All tools are freely available at https://github.com/CTR-BFX/2018_Bacon_Charnock-Jones along with scripts to recreate figures X,Y,Z.
+
+
+Custom tools have been developed for assessing quality control metrics in a standardised report format, determining cell gene counts and combining digital expression matrices from different sequencing runs. All custom tools are freely available at https://github.com/CTR-BFX/2018_Bacon_Charnock-Jones along with scripts to recreate figures.
+
 
 <img src="Images/Processing.png" width="500">
 
