@@ -14,6 +14,10 @@ Bacon, W.A. <sup>‡,1,2,3</sup>, Hamilton, R.S. <sup>‡,2,3</sup>, Kieckbusch,
 ## Publication ##
 Bacon, W.A., Hamilton, R.S., Kieckbusch, J., Yu, Z.,  Abell, C., Colucci, F. and Charnock-Jones, D.S. (2018) Coup of T: Finding missing immune cell subtypes in growth restricted neonates using novel single-cell sequencing analysis. <i>Submitted</i>
 
+## Contact ##
+
+Contact rsh46 -at- cam.ac.uk for bioinformatics related queries
+
 ## Abstract ##
 
 To be added on paper acceptance
@@ -22,29 +26,57 @@ To be added on paper acceptance
 
 
 ### Data Processing ###
-Raw Fastq files are demultiplexed ([dropseq_demultiplex.sh](dropseq_demultiplex.sh)) using the Nextera indices and then converted to uBAM using PicardTools:FastqToSam (v2.9.0). Quality control, alignment (STAR v020201) gene quantification and final matrix generation were performed using DropSeqTools (v1.12 http://mccarrolllab.com/dropseq/). Alignments were performed against the mouse reference genome (mm10 available from http://mccarrolllab.com/dropseq/). The resulting digital expression matrix (DEM) was imported into Seurat (v2.3.0) for downstream analysis.
+All custom analysis scripts are freely available from https://github.com/CTR-BFX/2018_Bacon_Charnock-Jones including code to recreate the figures relating the single cell sequencing.
 
+<i><b>Note:</b> The provided R scripts all assume the script is placed in a directory containing the DEMs and/or Robjects. The script can be run interactively in R-studio or as a batch using Rscript. Note that some of the figures in the manuscript have had some label positions moved manually to prevent overlaps. R package versions are listed in the table below.</i>
 
+Raw Fastq files are demultiplexed ([dropseq_demultiplex.sh](dropseq_demultiplex.sh)) using the Nextera indices and then converted to uBAM using PicardTools:FastqToSam (v2.9.0). Quality control, alignment (STAR v020201) gene quantification and final matrix generation were performed using DropSeqTools (v1.12 http://mccarrolllab.com/dropseq/). Alignments were performed against the mouse reference genome (mm10 available from http://mccarrolllab.com/dropseq/). The resulting digital expression matrix (DEM) was imported into Seurat (Butler et al, 2018)(v2.3.0) for downstream analysis. Initial thresholds of a minimum 200 genes per cell and genes must be present in at least 3 cells were applied.
 
-Custom tools have been developed for assessing quality control metrics in a standardised report format, determining cell gene counts and combining digital expression matrices from different sequencing runs. All custom tools are freely available at https://github.com/CTR-BFX/2018_Bacon_Charnock-Jones along with scripts to recreate figures.
+All downstream analysis is performed using Seurat and has been split into two scripts. The first, [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEMs.R), performs the more computationally intensive tasks intended to be run on high performance computers, the Seurat object is saves in Robj format to be imported in to the, the second script, [dropseq_seurat_splitDEMs_Plots.R](dropseq_seurat_splitDEMs_Plots.R), for plotting and figure creation. This second script is intended for running on a laptop.
 
+#### Seurat Pipeline (Part 1) ####
+Here we outline the Seurat pipeline used for the more computationally demanding steps [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEMs.R).
 
 <img src="Images/Processing.png" width="500">
 
-Seurat (v2.0) was used to calculate PCA, find clusters, cluster gene markers and create tSNE dimensionality reduction plots.
+Two separate DEMs were calculated for the WT and WT+P0 samples. The WT only samples were used to calculate variable genes (FindVariableGenes), which were then used as input to generate the PCA (RunPCA), find clusters (FindClusters) and produce a tSNE (t-distributed stochastic neighbor embedding) visualisation (RunTSNE) from the combined WT and P0 sample DEM. FindClusters is run across multiple resolutions (0.2, 0.4, 0.6 0.8 and 1.0), each stored on the Seurat Object. Normalisation (NormalizeData), UMI and MT regression (FilterCells) were performed using Seurat. Cell cycle assignments were performed using SCRAN (Lun et al, 2016)(v1.6.9) on the combined WT+P0 DEM, using an intermediate SingleCellExperiment (v1.0.0) data structure, and then added back to the Seurat Object. Cell cycle genes were regressed out using a subtraction of G2M from S cell cycle scores per cell. The resulting Seurat data object is saved as an RObj for input into the plotting and differential analysis part of the pipeline.
 
-Normalisation, batch correction and cell cycle contributions are performed with SCRAN (v1.4.5)
+#### Seurat Pipeline (Part 2) ####
 
-Pseudo-time trajectories and diffusion maps are analyses are performed with Destiny (v2.4.5)?
+Here we outline the Seurat pipeline used for plotting and differential transcript identification [dropseq_seurat_splitDEMs_Plots.R](dropseq_seurat_splitDEMs_Plots.R).
 
-Resource       | URL
--------------- | --------------
-Mouse Genome   | [Link](ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_mm10_reference_metadata.tar.gz)
-FastQC         | [Link](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-ClusterFlow    | [DOI](http://dx.doi.org/10.12688/f1000research.10335.2)
-MultiQC        | [DOI](http://dx.doi.org/10.1093/bioinformatics/btw354)
+The RObj generated from the [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEMs.R) is used to extract (e.g. with GetCellEmbeddings) the required data for each of the plots in the figure (Resolution 0.6). Custom tSNE plots were generated using ggplot2. Transcript abundance dotplots were generated from AverageExpression extracted from the Seurat object and ggplot2. Differential transcript analysis was performed by comparing each cluster in turn to all others (FindAllMarkers) and using a log fold change threshold of > 0.7 and adjusted p value < 0.01. The heatmap (pHeatmap), used the same thresholds, and the top 20 gens for each cluster selected.
+
+
+
+
+Figure        | Output Filename                    | Description
+------------- | ---------------------------------- | -----------
+ 2            | T-Cell.Figure.2.pdf                | Some Plot   
+ 3            | T-Cell.Figure.3.pdf                | Some Plot   
+ 5A           | T-Cell.Figure.5A.pdf               | Some Plot   
+ Supp Fig 1   | T-Cell.Figure.Supp1.simplified.pdf | Some Plot   
+ Supp Table 1 | T-Cell.Table.Supp1.xlsx            | Some Plot   
+ Supp Fig 2   | T-Cell.Figure.Supp2.pdf            | Some Plot   
+
+#### Ribosomal Protein Analysis ####
+A custom tool was created to classify whether ribosomal proteins are exposed on the surface or are internal to the ribosome. See [GitHub](https://github.com/darogan/Ribosomal-Protein) for more details. The output includes Pymol commands to render the structure showing the ribosomal proteins of interest.
 
 ### Sequencing metrics ###
+
+### Sample Table ###
+
+ArrayExpress or GEO submission [Link](link)
+
+Seq ID   | Index | Experiment | #Cells |
+:------: | :---: | :--------: | -----: |
+SLX-7632 | N701  | WT         | 1220
+SLX-7632 | N704  | WT         | 1341
+SLX-7632 | N705  | WT         |  813
+SLX-7632 | N706  | WT         | 1305
+SLX-7632 | N702  | P0         |	1300
+SLX-7632 | N703  | P0         |	675
+SLX-7632 | N707  | P0         |	610
 
 #### Alignment Rates ####											
 
@@ -62,7 +94,6 @@ SLX-7632 | N707 | PO | 26807105 | 18534932 | 69.1 | 5136585 | 19.2 | 235983 | 0.
 
 <img src="Images/GeneCoverageCorrelation.png" width="250">
 
-
 #### Cluster Cell Numbers	####
 
 Cluster By Size | Cluster Paper Number | WT  | P0   | Cell Type
@@ -77,49 +108,31 @@ Cluster By Size | Cluster Paper Number | WT  | P0   | Cell Type
 7 | 7 |  20 |  12 | Macrophage
 
 
-### Scripts to reproduce paper figures ###
-
-The provided R scripts assumes the script is placed in a directory containing XXXXX. The script can be run interactively in R-studio or as a batch using Rscript. Note that some of the figures in the manuscript have had some label positions moved manually to prevent overlaps. R package versions are listed int he table below
-
-#### DEM to Robj ####
-
-    dropseq_seurat_splitDEMs.R
-
-#### tSNE and Figure Generation ####
-
-    dropseq_seurat_splitDEMs_Plots.R
-
-Figure        | Description | Output Filename
-------------- | ----------- | ------------------------
- 2            | Some Plot   | T-Cell.Figure.2.pdf
- 3            | Some Plot   | T-Cell.Figure.3.pdf
- 5A           | Some Plot   | T-Cell.Figure.5A.pdf
- Supp Fig 1   | Some Plot   | T-Cell.Figure.Supp1.simplified.pdf
- Supp Table 1 | Some Plot   | T-Cell.Table.Supp1.xlsx
-
-### Sample Table ###
-
-ArrayExpress or GEO submission [Link](link)
-
-Seq ID   | Index | Experiment | #Cells |
-:------: | :---: | :--------: | -----: |
-SLX-7632 | N701  | WT         | 1220
-SLX-7632 | N704  | WT         | 1341
-SLX-7632 | N705  | WT         |  813
-SLX-7632 | N706  | WT         | 1305
-SLX-7632 | N702  | P0         |	1300
-SLX-7632 | N703  | P0         |	675
-SLX-7632 | N707  | P0         |	610
-
-
-## References ##
-
-### Links ###
+## Links ##
 
 Description   | URL
 ------------- | ----------
 Publication   | [bioRxiv](http://), [Journal](http://) and [DOI](http://) <br>(<i>To be updated on publication</i>)
-Raw Data      | ArrayExpress EMBL-EBI [E-MTAB-XXXX](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-XXXX) <br>(<i>Data to be released on publication</i>)
+Raw Data      | ArrayExpress EMBL-EBI [E-MTAB-6945](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-6945) <br>(<i>Data to be released on publication</i>)
+
+### Software Used ###
+
+Resource             | URL
+-------------------- | --------------
+DropSeqTools         | [Link](http://mccarrolllab.com/dropseq/)
+Mouse Genome         | [Link](ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63472/suppl/GSE63472_mm10_reference_metadata.tar.gz)
+FastQC               | [Link](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+MultiQC              | [DOI](http://dx.doi.org/10.1093/bioinformatics/btw354)
+BBMap                | [Link](https://sourceforge.net/projects/bbmap/)
+STAR                 | [Link]()
+RibosomeStructure.pl | [GitHub](https://github.com/darogan/Ribosomal-Protein)
+
+### References ###
+
+
+Butler A, Hoffman P, Smibert P, Papalexi E, & Satija R (2018) Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nature Biotechnology 36, 411–420 [DOI](https://doi.org/10.1038/nbt.4096)
+
+Lun ATL, McCarthy DJ, Marioni JC (2016). A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor. F1000Res., 5, 2122. [DOI](http://dx.doi.org/10.12688/f1000research.9501.2)
 
 ### Session Information ###
 Details for the R version and packages used to create all figures
@@ -169,7 +182,3 @@ loaded via a namespace (and not attached):
 [153] prabclus_2.2-6         iterators_1.0.9        bit_1.1-12             ggforce_0.1.1          class_7.3-14           stringi_1.1.7          mixtools_1.1.0         blob_1.1.1            
 [161] doSNOW_1.0.16          latticeExtra_0.6-28    caTools_1.17.1         memoise_1.1.0          irlba_2.3.2            ape_5.1
 ````
-
-## Contact ##
-
-Contact rsh46 -at- cam.ac.uk for bioinformatics related queries
