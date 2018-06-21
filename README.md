@@ -134,6 +134,7 @@ Butler A, Hoffman P, Smibert P, Papalexi E, & Satija R (2018) Integrating single
 
 Lun ATL, McCarthy DJ, Marioni JC (2016). A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor. F1000Res., 5, 2122. [DOI](http://dx.doi.org/10.12688/f1000research.9501.2)
 
+
 ### Session Information ###
 Details for the R version and packages used to create all figures
 
