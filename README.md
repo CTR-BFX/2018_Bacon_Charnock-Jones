@@ -127,6 +127,7 @@ BBMap                | [Link](https://sourceforge.net/projects/bbmap/)
 STAR                 | [Link]()
 RibosomeStructure.pl | [GitHub](https://github.com/darogan/Ribosomal-Protein)
 
+
 ### References ###
 
 Butler A, Hoffman P, Smibert P, Papalexi E, & Satija R (2018) Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nature Biotechnology 36, 411–420 [DOI](https://doi.org/10.1038/nbt.4096)
@@ -135,6 +136,7 @@ Lun ATL, McCarthy DJ, Marioni JC (2016). A step-by-step workflow for low-level a
 
 
 ### Session Information ###
+
 
 Details for the R version and packages used to create all figures
 
