@@ -1,8 +1,6 @@
-# Coup of T: Finding missing immune cell subtypes in growth restricted neonates using novel single-cell sequencing analysis #
+# Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonates
 
-
-
-Bacon, W.A. <sup>‡,1,2,3</sup>, Hamilton, R.S. <sup>‡,2,3</sup>, Kieckbusch, J. <sup>1,2</sup>, Yu, Z. <sup>4</sup>,  Abell, C. <sup>4</sup>, Colucci, F. <sup>1,2</sup> & Charnock-Jones, D.S. <sup>§,1,2</sup>
+**Bacon, W.A. <sup>‡,1,2,3</sup>, Hamilton, R.S. <sup>‡,2,3</sup>, Kieckbusch, J. <sup>1,2</sup>, Yu, Z. <sup>4</sup>,  Abell, C. <sup>4</sup>, Colucci, F. <sup>1,2</sup> & Charnock-Jones, D.S. <sup>§,1,2</sup>**
 
 <sup>‡</sup> Co-first authors,
 <sup>§</sup> Corresponding author <br>
@@ -50,14 +48,18 @@ The RObj generated from the [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEM
 
 
 
-Figure        | Output Filename                    | Description
-------------- | ---------------------------------- | -----------
- 2            | T-Cell.Figure.2.pdf                | Some Plot   
- 3            | T-Cell.Figure.3.pdf                | Some Plot   
- 5A           | T-Cell.Figure.5A.pdf               | Some Plot   
- Supp Fig 1   | T-Cell.Figure.Supp1.simplified.pdf | Some Plot   
- Supp Table 1 | T-Cell.Table.Supp1.xlsx            | Some Plot   
- Supp Fig 2   | T-Cell.Figure.Supp2.pdf            | Some Plot   
+Figure        | Output Filename            | Description
+------------- | -------------------------- | -----------
+ 2            | T-Cell.Figure.2.pdf        | tSNE, classical cell markers and summary tSNE   
+ 3            | T-Cell.Figure.3.pdf        | Heatmap unsupervised clustering of top 20 genes per cluster  
+ 4A           | T-Cell.Figure.4A.pdf       | tSNE with cells coloured by cell cycle assignments  
+ 4C           | T-Cell.Figure.4C.pdf       | tSNE with cells coloured by averaged ribosomal protein transcript levels
+ 5A           | T-Cell.Figure.5A.pdf       | tSNE with cells coloured by genotype (WT and P0)
+ Supp Fig 1   | T-Cell.Figure.Supp1.pdf    | Sequencing coverage for the Igf2 genomic region 
+ Supp Fig 2   | T-Cell.Figure.Supp2.pdf    | Cluster Mapping with and without cell cycle regression
+ Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Sequencing Metrics
+ Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Top 20 genes per cluster vs all other clusters
+
 
 #### Ribosomal Protein Analysis ####
 A custom tool was created to classify whether ribosomal proteins are exposed on the surface or are internal to the ribosome. See [GitHub](https://github.com/darogan/Ribosomal-Protein) for more details. The output includes Pymol commands to render the structure showing the ribosomal proteins of interest.
