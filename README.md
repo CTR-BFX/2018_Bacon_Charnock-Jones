@@ -55,14 +55,14 @@ Figure        | Output Filename            | Description
  4A           | T-Cell.Figure.4A.pdf       | tSNE with cells coloured by cell cycle assignments  
  4C           | T-Cell.Figure.4C.pdf       | tSNE with cells coloured by averaged ribosomal protein transcript levels
  5A           | T-Cell.Figure.5A.pdf       | tSNE with cells coloured by genotype (WT and P0)
- Supp Fig 1   | T-Cell.Figure.Supp1.pdf    | Sequencing coverage for the Igf2 genomic region 
+ Supp Fig 1   | T-Cell.Figure.Supp1.pdf    | Sequencing coverage for the Igf2 genomic region
  Supp Fig 2   | T-Cell.Figure.Supp2.pdf    | Cluster Mapping with and without cell cycle regression
  Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Sequencing Metrics
  Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Top 20 genes per cluster vs all other clusters
 
 
 #### Ribosomal Protein Analysis ####
-A custom tool was created to classify whether ribosomal proteins are exposed on the surface or are internal to the ribosome. See [GitHub](https://github.com/darogan/Ribosomal-Protein) for more details. The output includes Pymol commands to render the structure showing the ribosomal proteins of interest.
+A custom tool was created to classify whether ribosomal proteins are exposed on the surface or are internal to the ribosome. See [https://github.com/darogan/Ribosomal-Protein](https://github.com/darogan/Ribosomal-Protein) for more details. The output includes Pymol commands to render the structure showing the ribosomal proteins of interest.
 
 ### Sequencing metrics ###
 
