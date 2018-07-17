@@ -14,7 +14,7 @@ Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abel
 
 ## Contact ##
 
-Contact rsh46 -at- cam.ac.uk for bioinformatics related queries
+If there are any questions or suggestions please submit an issue using the GitHub menu above otherwise contact rsh46 -at- cam.ac.uk for bioinformatics related queries
 
 ## Abstract ##
 
@@ -43,9 +43,7 @@ Two separate DEMs were calculated for the WT and WT+P0 samples. The WT only samp
 
 Here we outline the Seurat pipeline used for plotting and differential transcript identification [dropseq_seurat_splitDEMs_Plots.R](dropseq_seurat_splitDEMs_Plots.R).
 
-The RObj generated from the [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEMs.R) is used to extract (e.g. with GetCellEmbeddings) the required data for each of the plots in the figure (Resolution 0.6). Custom tSNE plots were generated using ggplot2. Transcript abundance dotplots were generated from AverageExpression extracted from the Seurat object and ggplot2. Differential transcript analysis was performed by comparing each cluster in turn to all others (FindAllMarkers) and using a log fold change threshold of > 0.7 and adjusted p value < 0.01. The heatmap (pHeatmap), used the same thresholds, and the top 20 gens for each cluster selected.
-
-
+The RObj generated from the [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEMs.R) is used to extract (e.g. with GetCellEmbeddings) the required data for each of the plots in the figure. Custom tSNE plots were generated using ggplot2. Transcript abundance dotplots were generated from AverageExpression extracted from the Seurat object and ggplot2. Cluster trees were generated using clustree (Zappia & Oshlack, 2018). Differential transcript analysis was performed by comparing each cluster in turn to all others (FindAllMarkers) and using a log fold change threshold of > 0.7 and adjusted p value < 0.01. The heatmap (pHeatmap), used the same thresholds, with just the top 20 genes for each cluster selected.
 
 
 Figure        | Output Filename            | Description
@@ -127,7 +125,8 @@ Mouse Genome         | [Link](ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE
 FastQC               | [Link](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 MultiQC              | [DOI](http://dx.doi.org/10.1093/bioinformatics/btw354)
 BBMap                | [Link](https://sourceforge.net/projects/bbmap/)
-STAR                 | [Link]()
+STAR                 | [Link](https://github.com/alexdobin/STAR)
+clustree             | [Link](https://github.com/lazappi/clustree)
 RibosomeStructure.pl | [GitHub](https://github.com/darogan/Ribosomal-Protein)
 
 

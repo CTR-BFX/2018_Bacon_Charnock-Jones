@@ -4,7 +4,8 @@
 # DROPSEQ Analysis to accompany:
 #
 # Bacon et al, 2018      
-# Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice
+# Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted 
+# Neonatal Mice
 #
 # Link to publication
 # TO ADD ONCE AVAILABLE
