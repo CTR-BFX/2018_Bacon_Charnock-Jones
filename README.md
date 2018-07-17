@@ -1,16 +1,16 @@
-# Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonates
+# Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice
 
-**Bacon, W.A. <sup>‡,1,2,3</sup>, Hamilton, R.S. <sup>‡,2,3</sup>, Kieckbusch, J. <sup>1,2</sup>, Yu, Z. <sup>4</sup>,  Abell, C. <sup>4</sup>, Colucci, F. <sup>1,2</sup> & Charnock-Jones, D.S. <sup>§,1,2</sup>**
+**Bacon, W.A.<sup>‡,§,1,2,3</sup>, Hamilton, R.S.<sup>‡,2,3</sup>, Yu, Z.<sup>4</sup>, Kieckbusch, J.<sup>1,2</sup>, Hawkes, D.<sup>1</sup>, Krzak, A.<sup>1</sup>, Abell, C.<sup>4</sup>, Colucci, F.<sup>1,2</sup> & Charnock-Jones, D.S.<sup>§,1,2</sup>**
 
 <sup>‡</sup> Co-first authors,
-<sup>§</sup> Corresponding author <br>
+<sup>§</sup> Corresponding authors <br>
 <sup>1</sup> Department of Obstetrics & Gynaecology,
 <sup>2</sup> Centre for Trophoblast Research,
 <sup>3</sup> Department of Physiology, Development, & Neuroscience, University of Cambridge, Downing Site, Cambridge, CB2 3DY,
 <sup>4</sup> Department of Chemistry
 
 ## Publication ##
-Bacon, W.A., Hamilton, R.S., Kieckbusch, J., Yu, Z.,  Abell, C., Colucci, F. and Charnock-Jones, D.S. (2018) Coup of T: Finding missing immune cell subtypes in growth restricted neonates using novel single-cell sequencing analysis. <i>Submitted</i>
+Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>Submitted</i>
 
 ## Contact ##
 
@@ -50,15 +50,16 @@ The RObj generated from the [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEM
 
 Figure        | Output Filename            | Description
 ------------- | -------------------------- | -----------
- 2            | T-Cell.Figure.2.pdf        | tSNE, classical cell markers and summary tSNE   
- 3            | T-Cell.Figure.3.pdf        | Heatmap unsupervised clustering of top 20 genes per cluster  
- 4A           | T-Cell.Figure.4A.pdf       | tSNE with cells coloured by cell cycle assignments  
- 4C           | T-Cell.Figure.4C.pdf       | tSNE with cells coloured by averaged ribosomal protein transcript levels
- 5A           | T-Cell.Figure.5A.pdf       | tSNE with cells coloured by genotype (WT and P0)
+ 2            | T-Cell.Figure.2.pdf        | tSNE, classical cell markers, clustree and summary tSNE   
+ 3A            | T-Cell.Figure.3A.pdf        | Heatmap unsupervised clustering of top 20 genes per cluster  
+ 3B           | T-Cell.Figure.3B.pdf       | tSNE with cells coloured by cell cycle assignments  
+ 3E           | T-Cell.Figure.3E.pdf       | tSNE with cells coloured by averaged ribosomal protein transcript levels
+ 4A           | T-Cell.Figure.4A.pdf       | tSNE with cells coloured by genotype (WT and P0)
  Supp Fig 1   | T-Cell.Figure.Supp1.pdf    | Sequencing coverage for the Igf2 genomic region
  Supp Fig 2   | T-Cell.Figure.Supp2.pdf    | Cluster Mapping with and without cell cycle regression
+ Supp Fig 3   | T-Cell.Figure.Supp3.pdf    | Resolution Effects on Cluster Calling (tSNE & clustree)
  Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Sequencing Metrics
- Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Top 20 genes per cluster vs all other clusters
+ Supp Table 2 | T-Cell.Table.Supp2.xlsx    | Table of Top 20 genes per cluster vs all other clusters
 
 
 #### Ribosomal Protein Analysis ####
@@ -135,6 +136,8 @@ RibosomeStructure.pl | [GitHub](https://github.com/darogan/Ribosomal-Protein)
 Butler A, Hoffman P, Smibert P, Papalexi E, & Satija R (2018) Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nature Biotechnology 36, 411–420 [DOI](https://doi.org/10.1038/nbt.4096)
 
 Lun ATL, McCarthy DJ, Marioni JC (2016). A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor. F1000Res., 5, 2122. [DOI](http://dx.doi.org/10.12688/f1000research.9501.2)
+
+Zappia, L. & Oshlack, A. (2018) Clustering trees: a visualisation for evaluating clusterings at multiple resolutions. GigaScience, giy083, [DOI](https://doi.org/10.1093/gigascience/giy083)
 
 ### R SessionInfo() ###
 

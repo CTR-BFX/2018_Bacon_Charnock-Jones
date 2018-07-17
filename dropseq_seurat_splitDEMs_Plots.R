@@ -4,7 +4,7 @@
 # DROPSEQ Analysis to accompany:
 #
 # Bacon et al, 2018      
-# Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonates 
+# Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice
 #
 # Link to publication
 # TO ADD ONCE AVAILABLE
@@ -67,6 +67,7 @@ suppressPackageStartupMessages({
  library("SingleCellExperiment")
  library("pheatmap")
  library("tidyr")
+ library("Cairo")
 })
 
 genecut       <- 300
@@ -209,71 +210,73 @@ lapply(files, function(x) {
 
 
 message("+---------------------------------------------------------------------------------+")
-message("+--- Multi-resolution Plots                                                    ---+")
+message("+--- Multi-resolution Plots   (Supp Figure 3)                                  ---+")
 message("+---------------------------------------------------------------------------------+")
 
+
+
+
+
+counter = 1
+str(counter)
+tSNE.plot.list <- list() 
+
 for(res in c( 0.2, 0.4, 0.6, 0.8, 1.0 ))
-   {
-     message(paste0("Creating tsne at ", res, " resolution"))
-     matrix.tsne  <- as.data.frame(GetCellEmbeddings(object=matrix.su, reduction.type="tsne", dims.use=1:2))
-     matrix.tsne$Experiment <- gsub("\\.[0-9]$",   "",          rownames(matrix.tsne))
-     matrix.tsne$Experiment <- gsub("..{12}$","",               matrix.tsne$Experiment)
-     matrix.tsne$Experiment <- gsub("SLX......","",             matrix.tsne$Experiment)
-     matrix.tsne$Experiment <- gsub("N701|N704|N705|N706","WT", matrix.tsne$Experiment)
-     matrix.tsne$Experiment <- gsub("N702|N703|N707",     "KO", matrix.tsne$Experiment)
-     
-     reso                <- paste0("res.", res)
-     clust               <- matrix.su@meta.data %>% dplyr::select(contains(reso))
-     colnames(clust)     <- c("Cluster")
-     matrix.tsne$Cluster <- clust$Cluster
-     
-     tsne.X <- ggplot(matrix.tsne, aes(x=tSNE_1, y=tSNE_2, colour=Cluster)) +
-               geom_point(alpha=0.5, size=2) +
-               ggtitle(paste0(slxID, " tsne res=", resolution, " genecut=", genecut, " res=", res,
-                              "\n regression=", regression, " method=", methodRun, " perplexity=", perplexity))
-     clusters <- levels(factor(matrix.tsne$Cluster))
-     for(i in clusters){
-       centroid          <- centroidFunction(matrix.tsne[matrix.tsne$Cluster == i,])
-       dispersion        <- meanCentroidDist(matrix.tsne[matrix.tsne$Cluster == i,], centroid)
-       cluster_num_cells <- nrow( matrix.tsne[matrix.tsne$Cluster == i,] )
-       tsne.X            <- tsne.X + annotate("rect", xmin = centroid$x-7.5, xmax = centroid$x+7.5,
-                                              ymin = centroid$y-5, ymax = centroid$y+5, alpha = .5,
-                                              colour='black', fill='white') +
-                                     annotate("text", x = centroid$x, y = centroid$y,
-                                              label = paste0("C_",i,"_",cluster_num_cells,
-                                                             "\n",dispersion),size=5) 
-       }
-     pdf(paste0(slxID, ".", "tSNEs.colbyexpt.reg.", regression, ".method.", methodRun, 
-                ".perplexity.", perplexity, ".res.", res,  ".pdf") ,width=15,height=15, onefile=FALSE)
-     par(bg=NA)
-     print({ tsne.X })
-     dev.off()
+{
+  message(paste0("Creating tsne at ", res, " resolution ", counter ))
+  matrix.tsne  <- as.data.frame(GetCellEmbeddings(object=matrix.su, reduction.type="tsne", dims.use=1:2))
+  matrix.tsne$Experiment <- gsub("\\.[0-9]$",   "",          rownames(matrix.tsne))
+  matrix.tsne$Experiment <- gsub("..{12}$","",               matrix.tsne$Experiment)
+  matrix.tsne$Experiment <- gsub("SLX......","",             matrix.tsne$Experiment)
+  matrix.tsne$Experiment <- gsub("N701|N704|N705|N706","WT", matrix.tsne$Experiment)
+  matrix.tsne$Experiment <- gsub("N702|N703|N707",     "KO", matrix.tsne$Experiment)
+  
+  reso                <- paste0("res.", res)
+  clust               <- matrix.su@meta.data %>% dplyr::select(contains(reso))
+  colnames(clust)     <- c("Cluster")
+  matrix.tsne$Cluster <- clust$Cluster
+  
+  tsne.XX <- ggplot(matrix.tsne, aes(x=tSNE_1, y=tSNE_2, colour=Cluster)) +
+             geom_point(alpha=0.5, size=1) +
+             ggtitle(paste0("Resolution ", res )) +
+             xlab("") + ylab("") 
+
+  clusters <- levels(factor(matrix.tsne$Cluster))
+  for(i in clusters){
+    centroid   <- centroidFunction(matrix.tsne[matrix.tsne$Cluster == i,])
+    tsne.XX    <- tsne.XX + annotate("text", x = centroid$x, y = centroid$y, label = paste0(i),size=8, alpha=0.6) 
+  }
+  tsne.XX    <- tsne.XX + coord_fixed() +
+                theme(text=element_text(size=16,  family="sans"),
+                      legend.position="none", line = element_blank(),
+                      axis.text.x=element_blank(), axis.text.y=element_blank()) 
+  
+  tSNE.plot.list[[counter]] <- tsne.XX 
+  counter <- counter + 1
 }
 
 
+ctree <- clustree(matrix.su)
+
+
+pdf(paste0("T-Cell.Figure.Supp3.pdf") ,width=10,height=20, onefile=FALSE)
+par(bg=NA)
+plot_grid(tSNE.plot.list[[1]], tSNE.plot.list[[2]], tSNE.plot.list[[3]], tSNE.plot.list[[4]], tSNE.plot.list[[5]], ctree, ncol=2, nrow=3)
+dev.off()
+
+
+
+matrix.su.sub           <- matrix.su
+matrix.su.sub           <- FindClusters(object=matrix.su.sub, reduction.type = "pca", resolution = 0.3, print.output = FALSE) 
+matrix.su.sub@meta.data <- matrix.su.sub@meta.data[ , -which(names(matrix.su.sub@meta.data) %in% c("res.0.3", "res.0.8","res.1"))]
+names(matrix.su.sub@meta.data)
 
 message("+--- clustree packaged version ---+")
-ctree <- clustree(matrix.su)
+ctree <- clustree(matrix.su.sub)
 pdf(paste0(slxID, ".", "clustree.", regression, ".", resolution, ".", methodRun, ".pdf") ,width=10,height=10, onefile=FALSE)
 par(bg=NA)
 ctree
 dev.off()
-
-
-for(markers in c("H19", "Cd4", "Cd8a", "Cd8b1", "Il2ra", "Cd44", "Itm2a", "Ptprc", "Bcl11b")) # "Hba-a1"))
-{
-  message(paste0("Creating clustree with ", markers))
-  pdf(paste0(slxID, ".", "clustree.", regression, ".", resolution, ".", methodRun, ".", markers, ".pdf") ,width=10,height=10, onefile=FALSE)
-  par(bg=NA)
-  print({ clustree(matrix.su, node_colour = markers, node_colour_aggr = "median") })
-  dev.off()
-}
-
-
-
-
-
-
 
 
 
@@ -425,11 +428,15 @@ colgaps <- c(colgaps.indi[1],
              colgaps.indi[1]+colgaps.indi[2]+colgaps.indi[3]+colgaps.indi[4]+colgaps.indi[5] )
 
 message(paste0( "clusterAll.data range: ", min(clusterAll.scaledata), " to ", max(clusterAll.scaledata)))
-pdf("T-Cell.Figure.3.pdf", width=27,height=25, onefile=FALSE)
+
+pdf("T-Cell.Figure.3A.pdf", width=27,height=25, onefile=FALSE)
 par(bg=NA)
 pheatmap(clusterAll.scaledata, show_colnames = FALSE, cluster_rows=TRUE, cluster_cols=FALSE, annotation=clusterAll.data.annot, annotation_colors=AnnotCols, 
          fontsize=28, fontsize_row=20, col=ScaleCols, gaps_col=colgaps, cutree_rows=8) 
 dev.off()
+
+
+
 
 
 clustertableAll <- clustertableAll.original
@@ -458,10 +465,12 @@ tsne.wtko
 
 
 
-pdf("T-Cell.Figure.5A.pdf", width=10,height=10, onefile=FALSE)
+pdf("T-Cell.Figure.4A.pdf", width=10,height=10, onefile=FALSE)
 par(bg=NA)
 tsne.wtko
 dev.off()
+
+
 
 
 
@@ -488,7 +497,7 @@ tsne.cc            <- tsne.cc + xlab("") + ylab("") + coord_fixed() +
                       legend.key.height = unit(1.25, "cm"), axis.text.x=element_blank(), axis.text.y=element_blank()) + guides(colour = guide_legend(override.aes = list(size=5)))
 
 tsne.cc 
-pdf("T-Cell.Figure.4A.pdf", width=10,height=10, onefile=FALSE)
+pdf("T-Cell.Figure.3B.pdf", width=10,height=10, onefile=FALSE)
 par(bg=NA)
 tsne.cc
 dev.off()
@@ -535,7 +544,7 @@ tsne.rp            <- tsne.rp + xlab("") + ylab("") + coord_fixed() +
 tsne.rp
 
 
-pdf("T-Cell.Figure.4D.pdf", width=10,height=10, onefile=FALSE)
+pdf("T-Cell.Figure.3E.pdf", width=10,height=10, onefile=FALSE)
 par(bg=NA)
 tsne.rp 
 dev.off()
