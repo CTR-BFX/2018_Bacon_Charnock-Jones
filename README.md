@@ -57,7 +57,7 @@ Figure        | Output Filename            | Description
  Supp Fig 2   | T-Cell.Figure.Supp2.pdf    | Cluster Mapping with and without cell cycle regression
  Supp Fig 3   | T-Cell.Figure.Supp3.pdf    | Resolution Effects on Cluster Calling (tSNE & clustree)
  Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Sequencing Metrics
- Supp Table 2 | T-Cell.Table.Supp2.xlsx    | Table of Top 20 genes per cluster vs all other clusters
+ Supp Table 2 | T-Cell.Table.Supp2.csv     | Table of Top 20 genes per cluster vs all other clusters
 
 
 #### Ribosomal Protein Analysis ####
