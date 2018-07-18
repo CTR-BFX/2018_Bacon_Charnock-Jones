@@ -67,7 +67,7 @@ A custom tool was created to classify whether ribosomal proteins are exposed on 
 
 ### Sample Table ###
 
-ArrayExpress or GEO submission [Link](link)
+ArrayExpress or GEO submission [E-MTAB-6945](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-6945)
 
 Seq ID   | Index | Experiment | #Cells |
 :------: | :---: | :--------: | -----: |
