@@ -260,7 +260,7 @@ for(res in c( 0.2, 0.4, 0.6, 0.8, 1.0 ))
 ctree <- clustree(matrix.su)
 
 
-pdf(paste0("T-Cell.Figure.Supp3.pdf") ,width=10,height=20, onefile=FALSE)
+pdf(paste0("T-Cell.Figure.Supp6.pdf") ,width=10,height=20, onefile=FALSE)
 par(bg=NA)
 plot_grid(tSNE.plot.list[[1]], tSNE.plot.list[[2]], tSNE.plot.list[[3]], tSNE.plot.list[[4]], tSNE.plot.list[[5]], ctree, ncol=2, nrow=3)
 dev.off()
@@ -271,15 +271,6 @@ matrix.su.sub           <- matrix.su
 matrix.su.sub           <- FindClusters(object=matrix.su.sub, reduction.type = "pca", resolution = 0.3, print.output = FALSE) 
 matrix.su.sub@meta.data <- matrix.su.sub@meta.data[ , -which(names(matrix.su.sub@meta.data) %in% c("res.0.3", "res.0.8","res.1"))]
 names(matrix.su.sub@meta.data)
-
-message("+--- clustree packaged version ---+")
-ctree <- clustree(matrix.su.sub)
-pdf(paste0(slxID, ".", "clustree.", regression, ".", resolution, ".", methodRun, ".pdf") ,width=10,height=10, onefile=FALSE)
-par(bg=NA)
-ctree
-dev.off()
-
-
 
 
 
@@ -330,6 +321,374 @@ write.csv(matrix.tsne.csv, file = paste0(slxID, ".", "Table.CellsByNexteraCellcy
 table(matrix.tsne.csv$Experiment,matrix.tsne.csv$Nextera)
 table(matrix.tsne.csv$Cell_cycle,matrix.tsne.csv$Nextera)
 table(matrix.tsne.csv$Cluster,matrix.tsne.csv$Nextera)
+
+
+
+message("+--- Explore WT vs P0 Differential Expression ---+")
+
+matrix.su.WTKO <- matrix.su
+
+# Apply paper cluster numbering
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("^",  "x", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x4", "1", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x0", "2", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x1", "3", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x3", "4", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x5", "5", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x2", "6", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x7", "7", matrix.su.WTKO@meta.data$res.0.6)
+matrix.su.WTKO@meta.data$res.0.6 <- gsub("x6", "8", matrix.su.WTKO@meta.data$res.0.6)
+
+# Cluster Cell Assignments
+matrix.su.WTKO@meta.data$cell_type <- matrix.su.WTKO@meta.data$res.0.6
+matrix.su.WTKO@meta.data$cell_type <- gsub("1",  "DN",         matrix.su.WTKO@meta.data$cell_type)
+matrix.su.WTKO@meta.data$cell_type <- gsub("2",  "DP",         matrix.su.WTKO@meta.data$cell_type)
+matrix.su.WTKO@meta.data$cell_type <- gsub("3",  "DP",         matrix.su.WTKO@meta.data$cell_type)
+matrix.su.WTKO@meta.data$cell_type <- gsub("4",  "DP",         matrix.su.WTKO@meta.data$cell_type)
+matrix.su.WTKO@meta.data$cell_type <- gsub("5",  "DP",         matrix.su.WTKO@meta.data$cell_type)
+matrix.su.WTKO@meta.data$cell_type <- gsub("6",  "TMat",       matrix.su.WTKO@meta.data$cell_type)
+matrix.su.WTKO@meta.data$cell_type <- gsub("7",  "Macrophage", matrix.su.WTKO@meta.data$cell_type)
+matrix.su.WTKO@meta.data$cell_type <- gsub("8",  "RBC",        matrix.su.WTKO@meta.data$cell_type)
+
+matrix.su.WTKO@meta.data$cluster_experiment   <- paste0(matrix.su.WTKO@meta.data$Experiment, "_", matrix.su.WTKO@meta.data$res.0.6 )
+matrix.su.WTKO@meta.data$cell_type_experiment <- paste0(matrix.su.WTKO@meta.data$Experiment, "_", matrix.su.WTKO@meta.data$cell_type )
+
+head(matrix.su.WTKO@meta.data)
+
+
+
+
+
+matrix.su.WTKO                              <- SetAllIdent(matrix.su.WTKO, id = "cluster_experiment")
+
+sig_cut   <- 0.01
+logfc_cut <- 0.5
+topN      <- 10
+
+functionPlotDEVolcanoWTP0 <- function(matrix, clusterID, clustA.lab, clustB.lab, sig_cut, logfc_cut, topN) {
+  
+  clust.A.B           <- FindMarkers(matrix, ident.1 = clustA.lab, ident.2 = clustB.lab, print.bar = TRUE)
+  clust.A.B           <- clust.A.B[order(clust.A.B$avg_logFC, decreasing=TRUE),]
+  
+  clust.A.labP0.corrected <- gsub("KO", "P0", clustA.lab)
+  clust.B.labP0.corrected <- gsub("KO", "P0", clustB.lab)
+  write.csv(subset(clust.A.B,clust.A.B$p_val_adj<=sig_cut), paste0("T-Cell.Table.", clust.A.labP0.corrected, ".vs.", clust.B.labP0.corrected, ".adjp.", sig_cut, ".csv"), quote = F)
+
+  clust.A.B$p_val_adj[clust.A.B$p_val_adj == 0] <- 2.225074e-308 # adj pval = 0 adjusted to minimum permitted value in R
+  
+  clust.A.B           <- clust.A.B[,c(2,5)]
+  colnames(clust.A.B) <- c("avg_logFC","p_val_adj")
+  clust.A.B$genes     <- rownames(clust.A.B)
+  
+  xlim_min  <- -1.5
+  xlim_max  <- 1.5
+  ylim_min  <- 0
+  ylim_max  <- 110
+  
+  volc.plt <- ggplot(data=clust.A.B, aes(x=avg_logFC, y=-log(p_val_adj), label=genes)) +
+    geom_point(alpha=0.5, size=1, colour=ifelse(clust.A.B$p_val_adj<=sig_cut,"red","grey")) +
+    geom_text_repel( data= subset(clust.A.B, clust.A.B$avg_logFC > 0      & clust.A.B$p_val_adj<=sig_cut)[1:topN,], show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=3 ) +
+    geom_text_repel( data= tail(subset(clust.A.B, clust.A.B$avg_logFC < 0 & clust.A.B$p_val_adj<=sig_cut),topN),    show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=3 ) +
+    xlab("Avg logFC") + ylab(bquote("-log"[10]~"(adj.p.value)")) + 
+    scale_x_continuous(limits=c(xlim_min,xlim_max), breaks=seq(xlim_min,xlim_max,0.5)) + scale_y_continuous(limits=c(ylim_min,ylim_max), breaks=seq(ylim_min,ylim_max,25)) +
+    ggtitle(paste0("Cluster ", clusterID, " (WT/P0)")) + theme(aspect.ratio=1)
+  
+  return(list(clust.A.B, volc.plt))
+}
+
+cluster.1.WT.vs.P0 <- functionPlotDEVolcanoWTP0(matrix.su.WTKO, 1, "WT_1", "KO_1", sig_cut, logfc_cut, topN)
+cluster.2.WT.vs.P0 <- functionPlotDEVolcanoWTP0(matrix.su.WTKO, 2, "WT_2", "KO_2", sig_cut, logfc_cut, topN)
+cluster.3.WT.vs.P0 <- functionPlotDEVolcanoWTP0(matrix.su.WTKO, 3, "WT_3", "KO_3", sig_cut, logfc_cut, topN)
+cluster.4.WT.vs.P0 <- functionPlotDEVolcanoWTP0(matrix.su.WTKO, 4, "WT_4", "KO_4", sig_cut, logfc_cut, topN)
+cluster.5.WT.vs.P0 <- functionPlotDEVolcanoWTP0(matrix.su.WTKO, 5, "WT_5", "KO_5", sig_cut, logfc_cut, topN)
+cluster.6.WT.vs.P0 <- functionPlotDEVolcanoWTP0(matrix.su.WTKO, 6, "WT_6", "KO_6", sig_cut, logfc_cut, topN)
+
+theme_set(theme_cowplot(font_size=10)) # reduce default font size
+
+pdf("T-Cell.Figure.SuppS8A.pdf", width=12,height=8, onefile=FALSE)
+par(bg=NA)
+plot_grid(cluster.1.WT.vs.P0[[2]], cluster.2.WT.vs.P0[[2]], cluster.3.WT.vs.P0[[2]], 
+          cluster.4.WT.vs.P0[[2]], cluster.5.WT.vs.P0[[2]], cluster.6.WT.vs.P0[[2]], nrow=2, ncol=3)
+dev.off()
+
+
+
+
+
+
+sig_cut   <- 0.01
+logfc_cut <- 0.5
+topN      <- 10
+
+functionPlotDECorrelation <- function(clustA, clustB, clustA.lab, clustB.lab, sig_cut, logfc_cut, topN) {
+
+  print( head(clustA) )
+  
+  colnames(clustA)  <- c("avg_logFC.A",  "p_val_adj.A",  "genes.A")
+  colnames(clustB)  <- c("avg_logFC.B",  "p_val_adj.B",  "genes.B")
+  
+  clustA.topN <- subset(clustA, clustA$avg_logFC.A > 0      & clustA$p_val_adj.A<=sig_cut)[1:topN,] 
+  clustA.botN <- tail(subset(clustA, clustA$avg_logFC.A < 0 & clustA$p_val_adj.A<=sig_cut),topN)
+  
+  clustB.topN <- subset(clustB, clustB$avg_logFC.B > 0      & clustB$p_val_adj.B<=sig_cut)[1:topN,] 
+  clustB.botN <- tail(subset(clustB, clustB$avg_logFC.B < 0 & clustB$p_val_adj.B<=sig_cut),topN)
+  
+  compare.A.B.wt.ko <- merge(clustA, clustB, by='row.names', all=TRUE)
+  compare.A.B.wt.ko[ is.na(compare.A.B.wt.ko)] <- 0
+
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A <= sig_cut & compare.A.B.wt.ko$p_val_adj.B <= sig_cut)] <- "purple"
+
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A > sig_cut  & compare.A.B.wt.ko$p_val_adj.B <= sig_cut)] <- "blue"
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A == 0       & compare.A.B.wt.ko$p_val_adj.B <= sig_cut)] <- "blue"
+
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A <= sig_cut & compare.A.B.wt.ko$p_val_adj.B > sig_cut)] <- "darkgreen"
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A <= sig_cut & compare.A.B.wt.ko$p_val_adj.B == 0)] <- "darkgreen"
+
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A > sig_cut & compare.A.B.wt.ko$p_val_adj.B > sig_cut)] <- ""
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A > sig_cut & compare.A.B.wt.ko$p_val_adj.B == 0 )]     <- ""
+  compare.A.B.wt.ko$colour[(compare.A.B.wt.ko$p_val_adj.A == 0      & compare.A.B.wt.ko$p_val_adj.B > sig_cut)] <- ""
+
+  compare.A.B.wt.ko$label <- 0
+  compare.A.B.wt.ko[compare.A.B.wt.ko$Row.names %in% unlist(rownames(clustA.topN)), ]$label  <- 1
+  compare.A.B.wt.ko[compare.A.B.wt.ko$Row.names %in% unlist(rownames(clustA.botN)), ]$label  <- 1
+  compare.A.B.wt.ko[compare.A.B.wt.ko$Row.names %in% unlist(rownames(clustB.topN)), ]$label  <- 1
+  compare.A.B.wt.ko[compare.A.B.wt.ko$Row.names %in% unlist(rownames(clustB.botN)), ]$label  <- 1
+  
+  print( head(compare.A.B.wt.ko) )
+ 
+  minFC <- -1.5 #min( compare.A.B.wt.ko$avg_logFC.A, compare.A.B.wt.ko$avg_logFC.B  )
+  maxFC <-  1.5 #max( compare.A.B.wt.ko$avg_logFC.A, compare.A.B.wt.ko$avg_logFC.B  )
+  
+  cor.plt <- ggplot(data=compare.A.B.wt.ko, aes(x=avg_logFC.A, y=avg_logFC.B, colour=colour, label=Row.names)) +
+             geom_vline(xintercept = -(logfc_cut), linetype="dashed", colour="grey", size=0.25) +
+             geom_vline(xintercept = logfc_cut,    linetype="dashed", colour="grey", size=0.25) +
+             geom_hline(yintercept = -(logfc_cut), linetype="dashed", colour="grey", size=0.25) +
+             geom_hline(yintercept = logfc_cut,    linetype="dashed", colour="grey", size=0.25) +
+             geom_abline(intercept = 0, linetype="solid", colour="grey") +
+             geom_point(alpha=0.5, size=2) +  
+             geom_text_repel( show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, colour="black", segment.size = 0.25, size=3,
+                              data= subset(compare.A.B.wt.ko, compare.A.B.wt.ko$label == 1) ) +
+             coord_fixed() +
+             scale_x_continuous(limits=c(minFC, maxFC), breaks=seq(minFC, maxFC,0.5)) + scale_y_continuous(limits=c(minFC, maxFC), breaks=seq(minFC, maxFC,0.5)) +
+             xlab(paste0("Avg logFC (Cluster ", clustA.lab, " WT Vs P0) ")) + ylab(paste0("Avg logFC (Cluster ", clustB.lab, " WT Vs P0) ")) +
+             scale_colour_manual(name="", values=c("purple"="purple", "blue"="blue", "darkgreen"="darkgreen", "grey"="grey"), 
+                                 labels=c("purple"=paste0("clusters ", clustA.lab, " & ", clustB.lab), "blue"=paste0("cluster ", clustB.lab, " only"), "darkgreen"=paste0("cluster ", clustA.lab, " only"))) +
+             ggtitle(paste0("Cluster ", clustA.lab, " (WT/P0) Vs Cluster ", clustB.lab, " (WT/P0)")) +
+             theme(text=element_text(family="sans"), legend.position="bottom", aspect.ratio=1 )
+
+return(cor.plt)
+}
+
+
+corr.plot.2.3 <- functionPlotDECorrelation(cluster.2.WT.vs.P0[[1]], cluster.3.WT.vs.P0[[1]], "2", "3", sig_cut, logfc_cut, topN)
+corr.plot.2.4 <- functionPlotDECorrelation(cluster.2.WT.vs.P0[[1]], cluster.2.WT.vs.P0[[1]], "2", "4", sig_cut, logfc_cut, topN)
+corr.plot.2.5 <- functionPlotDECorrelation(cluster.2.WT.vs.P0[[1]], cluster.2.WT.vs.P0[[1]], "2", "4", sig_cut, logfc_cut, topN)
+
+corr.plot.3.4 <- functionPlotDECorrelation(cluster.3.WT.vs.P0[[1]], cluster.4.WT.vs.P0[[1]], "3", "4", sig_cut, logfc_cut, topN)
+corr.plot.3.5 <- functionPlotDECorrelation(cluster.3.WT.vs.P0[[1]], cluster.5.WT.vs.P0[[1]], "3", "5", sig_cut, logfc_cut, topN)
+corr.plot.4.5 <- functionPlotDECorrelation(cluster.4.WT.vs.P0[[1]], cluster.5.WT.vs.P0[[1]], "4", "5", sig_cut, logfc_cut, topN)
+
+
+
+
+
+theme_set(theme_cowplot(font_size=12)) # reduce default font size
+pdf("T-Cell.Figure.SuppS8B.pdf", width=16,height=11, onefile=FALSE)
+par(bg=NA)
+plot_grid(corr.plot.2.3, corr.plot.2.4, corr.plot.2.5, corr.plot.3.4, corr.plot.3.5, corr.plot.4.5, nrow=2, ncol=3 )
+dev.off()
+
+
+
+
+matrix.su.WTKO <- SetAllIdent(matrix.su.WTKO, id = "res.0.6")
+
+sig_cut   <- 0.01
+logfc_cut <- 0.5
+topN      <- 10
+
+functionPlotDEVolcano <- function(matrix, clustA.lab, clustB.lab, sig_cut, logfc_cut, topN) {
+  
+  clust.A.B           <- FindMarkers(matrix, ident.1 = clustA.lab, ident.2 = clustB.lab, print.bar = TRUE)
+  clust.A.B           <- clust.A.B[order(clust.A.B$avg_logFC, decreasing=TRUE),]
+  
+  clust.A.labP0.corrected <- gsub("KO", "P0", clustA.lab)
+  clust.B.labP0.corrected <- gsub("KO", "P0", clustB.lab)
+  write.csv(subset(clust.A.B,clust.A.B$p_val_adj<=sig_cut), paste0("T-Cell.Table.", clust.A.labP0.corrected, ".vs.", clust.B.labP0.corrected, ".adjp.", sig_cut, ".csv"), quote = F)
+  
+  clust.A.B$p_val_adj[clust.A.B$p_val_adj == 0] <- 2.225074e-308 # adj pval = 0 adjusted to minimum permitted value in R
+  
+  clust.A.B           <- clust.A.B[,c(2,5)]
+  colnames(clust.A.B) <- c("avg_logFC","p_val_adj")
+  clust.A.B$genes     <- rownames(clust.A.B)
+ 
+  xlim_min  <- -3.5  #min(clust.A.B$avg_logFC)
+  xlim_max  <- 3.5   #max(clust.A.B$avg_logFC)
+  ylim_min  <- 0
+  ylim_max  <- 750 #min(clust.A.B$p_val_adj)
+  
+  volc.plt <- ggplot(data=clust.A.B, aes(x=avg_logFC, y=-log(p_val_adj), label=genes)) +
+              geom_point(alpha=0.5, size=1, colour=ifelse(clust.A.B$p_val_adj<=sig_cut,"red","grey")) +
+              geom_text_repel( data= subset(clust.A.B, clust.A.B$avg_logFC > 0      & clust.A.B$p_val_adj<=sig_cut)[1:topN,], show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=2 ) +
+              geom_text_repel( data= tail(subset(clust.A.B, clust.A.B$avg_logFC < 0 & clust.A.B$p_val_adj<=sig_cut),topN),    show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=2 ) +
+              xlab("Avg logFC") + ylab(bquote("-log"[10]~"(adj.p.value)")) + 
+              scale_x_continuous(limits=c(xlim_min,xlim_max), breaks=seq(xlim_min,xlim_max,1)) + scale_y_continuous(limits=c(ylim_min,ylim_max), breaks=seq(ylim_min,ylim_max,100)) +
+              ggtitle(paste0("Cluster ", clustA.lab, " vs ", clustB.lab)) + theme(aspect.ratio=1)
+
+  return(volc.plt)
+}
+
+cluster.1.vs.2 <- functionPlotDEVolcano(matrix.su.WTKO, 1, 2, sig_cut, logfc_cut, topN)
+cluster.1.vs.3 <- functionPlotDEVolcano(matrix.su.WTKO, 1, 3, sig_cut, logfc_cut, topN)
+cluster.1.vs.4 <- functionPlotDEVolcano(matrix.su.WTKO, 1, 4, sig_cut, logfc_cut, topN)
+cluster.1.vs.5 <- functionPlotDEVolcano(matrix.su.WTKO, 1, 5, sig_cut, logfc_cut, topN)
+cluster.1.vs.6 <- functionPlotDEVolcano(matrix.su.WTKO, 1, 6, sig_cut, logfc_cut, topN)
+
+cluster.2.vs.3 <- functionPlotDEVolcano(matrix.su.WTKO, 2, 3, sig_cut, logfc_cut, topN)
+cluster.2.vs.4 <- functionPlotDEVolcano(matrix.su.WTKO, 2, 4, sig_cut, logfc_cut, topN)
+cluster.2.vs.5 <- functionPlotDEVolcano(matrix.su.WTKO, 2, 5, sig_cut, logfc_cut, topN)
+cluster.2.vs.6 <- functionPlotDEVolcano(matrix.su.WTKO, 2, 6, sig_cut, logfc_cut, topN)
+
+cluster.3.vs.4 <- functionPlotDEVolcano(matrix.su.WTKO, 3, 4, sig_cut, logfc_cut, topN)
+cluster.3.vs.5 <- functionPlotDEVolcano(matrix.su.WTKO, 3, 5, sig_cut, logfc_cut, topN)
+cluster.3.vs.6 <- functionPlotDEVolcano(matrix.su.WTKO, 3, 6, sig_cut, logfc_cut, topN)
+
+cluster.4.vs.5 <- functionPlotDEVolcano(matrix.su.WTKO, 4, 5, sig_cut, logfc_cut, topN)
+cluster.4.vs.6 <- functionPlotDEVolcano(matrix.su.WTKO, 4, 6, sig_cut, logfc_cut, topN)
+
+cluster.5.vs.6 <- functionPlotDEVolcano(matrix.su.WTKO, 5, 6, sig_cut, logfc_cut, topN)
+
+
+pdf("T-Cell.Figure.SuppS7.pdf", width=15,height=15, onefile=FALSE)
+par(bg=NA)
+plot_grid(cluster.1.vs.2, cluster.1.vs.3, cluster.1.vs.4, cluster.1.vs.5, cluster.1.vs.6,
+          NULL,           cluster.2.vs.3, cluster.2.vs.4, cluster.2.vs.5, cluster.2.vs.6,
+          NULL,           NULL,           cluster.3.vs.4, cluster.3.vs.5, cluster.3.vs.6,
+          NULL,           NULL,           NULL,           cluster.4.vs.5, cluster.4.vs.6,
+          NULL,           NULL,           NULL,           NULL,           cluster.5.vs.6,
+          nrow=5, ncol=5)
+dev.off()
+
+
+
+matrix.su.WTKO <- SetAllIdent(matrix.su.WTKO, id = "cell_type_experiment")
+
+sig_cut   <- 0.01
+logfc_cut <- 0.5
+topN      <- 10
+
+functionPlotDEVolcanoCellTypeWTP0 <- function(matrix, clusterID, clustA.lab, clustB.lab, sig_cut, logfc_cut, topN) {
+  
+  clust.A.B           <- FindMarkers(matrix, ident.1 = clustA.lab, ident.2 = clustB.lab, print.bar = TRUE)
+  clust.A.B           <- clust.A.B[order(clust.A.B$avg_logFC, decreasing=TRUE),]
+  
+  clust.A.labP0.corrected <- gsub("KO", "P0", clustA.lab)
+  clust.B.labP0.corrected <- gsub("KO", "P0", clustB.lab)
+  write.csv(subset(clust.A.B,clust.A.B$p_val_adj<=sig_cut), paste0("T-Cell.Table.", clust.A.labP0.corrected, ".vs.", clust.B.labP0.corrected, ".adjp.", sig_cut, ".csv"), quote = F)
+  
+  clust.A.B$p_val_adj[clust.A.B$p_val_adj == 0] <- 2.225074e-308 # adj pval = 0 adjusted to minimum permitted value in R
+  clust.A.B           <- clust.A.B[,c(2,5)]
+  colnames(clust.A.B) <- c("avg_logFC","p_val_adj")
+  clust.A.B$genes     <- rownames(clust.A.B)
+  
+  xlim_min  <- -1.5
+  xlim_max  <- 1.5
+  ylim_min  <- 0
+  ylim_max  <- 400
+  
+  volc.plt <- ggplot(data=clust.A.B, aes(x=avg_logFC, y=-log(p_val_adj), label=genes)) +
+    geom_point(alpha=0.5, size=1, colour=ifelse(clust.A.B$p_val_adj<=sig_cut,"red","grey")) +
+    geom_text_repel( data= subset(clust.A.B, clust.A.B$avg_logFC > 0      & clust.A.B$p_val_adj<=sig_cut)[1:topN,], show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=3 ) +
+    geom_text_repel( data= tail(subset(clust.A.B, clust.A.B$avg_logFC < 0 & clust.A.B$p_val_adj<=sig_cut),topN),    show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=3 ) +
+    xlab("Avg logFC") + ylab(bquote("-log"[10]~"(adj.p.value)")) + 
+    scale_x_continuous(limits=c(xlim_min,xlim_max), breaks=seq(xlim_min,xlim_max,0.5)) + scale_y_continuous(limits=c(ylim_min,ylim_max), breaks=seq(ylim_min,ylim_max,50)) +
+    ggtitle(paste0("Cluster ", clusterID, " (WT/P0)")) + theme(aspect.ratio=1)
+  
+  return(list(clust.A.B, volc.plt))
+}
+
+clust.DN.wt.ko   <- functionPlotDEVolcanoCellTypeWTP0(matrix.su.WTKO, "DN",   "WT_DN",   "KO_DN",   sig_cut, logfc_cut, topN)
+clust.DP.wt.ko   <- functionPlotDEVolcanoCellTypeWTP0(matrix.su.WTKO, "DP",   "WT_DP",   "KO_DP",   sig_cut, logfc_cut, topN)
+clust.TMat.wt.ko <- functionPlotDEVolcanoCellTypeWTP0(matrix.su.WTKO, "TMat", "WT_TMat", "KO_TMat", sig_cut, logfc_cut, topN)
+
+theme_set(theme_cowplot(font_size=10)) # reduce default font size
+
+pdf("T-Cell.Figure.7B.pdf", width=12,height=5, onefile=FALSE)
+par(bg=NA)
+plot_grid(clust.DN.wt.ko[[2]], clust.DP.wt.ko[[2]], clust.TMat.wt.ko[[2]], nrow=1, ncol=3)
+dev.off()
+
+
+
+
+
+corr.plot.DN.DP.wt.ko   <- functionPlotDECorrelation(clust.DN.wt.ko[[1]], clust.DP.wt.ko[[1]],   "DN", "DP",   sig_cut, logfc_cut, topN)
+corr.plot.DP.TMat.wt.ko <- functionPlotDECorrelation(clust.DP.wt.ko[[1]], clust.TMat.wt.ko[[1]], "DP", "TMat", sig_cut, logfc_cut, topN)
+
+
+theme_set(theme_cowplot(font_size=8)) # reduce default font size
+pdf("T-Cell.Figure.7C.pdf", width=10,height=5, onefile=FALSE)
+par(bg=NA)
+plot_grid(corr.plot.DN.DP.wt.ko, corr.plot.DP.TMat.wt.ko, nrow=1, ncol=2 )
+dev.off()
+
+
+
+
+
+
+
+
+matrix.su.WTKO <- SetAllIdent(matrix.su.WTKO, id = "cell_type")
+
+sig_cut   <- 0.01
+logfc_cut <- 0.5
+topN      <- 10
+
+functionPlotDEVolcanoCellType <- function(matrix, clustA.lab, clustB.lab, sig_cut, logfc_cut, topN) {
+  
+  clust.A.B           <- FindMarkers(matrix, ident.1 = clustA.lab, ident.2 = clustB.lab, print.bar = TRUE)
+  clust.A.B           <- clust.A.B[order(clust.A.B$avg_logFC, decreasing=TRUE),]
+  
+  clust.A.labP0.corrected <- gsub("KO", "P0", clustA.lab)
+  clust.B.labP0.corrected <- gsub("KO", "P0", clustB.lab)
+  write.csv(subset(clust.A.B,clust.A.B$p_val_adj<=sig_cut), paste0("T-Cell.Table.", clust.A.labP0.corrected, ".vs.", clust.B.labP0.corrected, ".adjp.", sig_cut, ".csv"), quote = F)
+  
+  clust.A.B$p_val_adj[clust.A.B$p_val_adj == 0] <- 2.225074e-308 # adj pval = 0 adjusted to minimum permitted value in R
+  
+  print( subset(clust.A.B, clust.A.B$avg_logFC > 0      & clust.A.B$p_val_adj<=sig_cut)[1:topN,] )
+  print( tail(subset(clust.A.B, clust.A.B$avg_logFC < 0 & clust.A.B$p_val_adj<=sig_cut),topN) )
+  
+  clust.A.B           <- clust.A.B[,c(2,5)]
+  colnames(clust.A.B) <- c("avg_logFC","p_val_adj")
+  clust.A.B$genes     <- rownames(clust.A.B)
+  
+  xlim_min  <- -3
+  xlim_max  <- 2.5
+  ylim_min  <- 0
+  ylim_max  <- 750
+  
+  volc.plt <- ggplot(data=clust.A.B, aes(x=avg_logFC, y=-log(p_val_adj), label=genes)) +
+    geom_point(alpha=0.5, size=1, colour=ifelse(clust.A.B$p_val_adj<=sig_cut,"red","grey")) +
+    geom_text_repel( data= subset(clust.A.B, clust.A.B$avg_logFC > 0      & clust.A.B$p_val_adj<=sig_cut)[1:topN,], show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=3 ) +
+    geom_text_repel( data= tail(subset(clust.A.B, clust.A.B$avg_logFC < 0 & clust.A.B$p_val_adj<=sig_cut),topN),    show.legend = FALSE, nudge_x=0.1, nudge_y=0.1, segment.size = 0.25, size=3 ) +
+    xlab("Avg logFC") + ylab(bquote("-log"[10]~"(adj.p.value)")) + 
+    scale_x_continuous(limits=c(xlim_min,xlim_max), breaks=seq(xlim_min,xlim_max,1.0)) + scale_y_continuous(limits=c(ylim_min,ylim_max), breaks=seq(ylim_min,ylim_max,100)) +
+    ggtitle(paste0("Cluster ", clustA.lab, " Vs ", clustB.lab)) + theme(aspect.ratio=1)
+  
+  return(list(clust.A.B, volc.plt))
+}
+
+
+clust.DN.DP   <- functionPlotDEVolcanoCellType(matrix.su.WTKO, "DN", "DP",   sig_cut, logfc_cut, topN)
+clust.DP.TMat <- functionPlotDEVolcanoCellType(matrix.su.WTKO, "DP", "TMat", sig_cut, logfc_cut, topN)
+
+theme_set(theme_cowplot(font_size=10)) # reduce default font size
+
+pdf("T-Cell.Figure.7A.pdf", width=12,height=5, onefile=FALSE)
+par(bg=NA)
+plot_grid(clust.DN.DP[[2]], clust.DP.TMat[[2]], nrow=1, ncol=2)
+dev.off()
 
 
 
@@ -400,7 +759,8 @@ clusterAll.data.annot$Cell_cycle <- gsub("G2M", "G2/M", clusterAll.data.annot$Ce
 head(clusterAll.data.annot)
 
 
-ScaleCols <- colorRampPalette(colors = c("white","blue"))(255)
+#ScaleCols <- colorRampPalette(colors = c("white","blue"))(255)
+ScaleCols <- colorRampPalette(c("slategrey1", "blue", "navyblue"))(5)
 AnnotCols <- list( Cluster=c("1"=cluster_col_range[1], "2"=cluster_col_range[2], "3"=cluster_col_range[3], "4"=cluster_col_range[4], "5"=cluster_col_range[5], "6"=cluster_col_range[6]),  
                    Genotype=c(WT="#32CD32", P0="#BF3EFF"), Cell_cycle=c("G1"="#00BA38", "S"="magenta", "G2/M"="orange"))
 
@@ -430,7 +790,7 @@ colgaps <- c(colgaps.indi[1],
 
 message(paste0( "clusterAll.data range: ", min(clusterAll.scaledata), " to ", max(clusterAll.scaledata)))
 
-pdf("T-Cell.Figure.3A.pdf", width=27,height=25, onefile=FALSE)
+pdf("T-Cell.Figure.3.pdf", width=27,height=25, onefile=FALSE)
 par(bg=NA)
 pheatmap(clusterAll.scaledata, show_colnames = FALSE, cluster_rows=TRUE, cluster_cols=FALSE, annotation=clusterAll.data.annot, annotation_colors=AnnotCols, 
          fontsize=28, fontsize_row=20, col=ScaleCols, gaps_col=colgaps, cutree_rows=8) 
@@ -466,7 +826,7 @@ tsne.wtko
 
 
 
-pdf("T-Cell.Figure.4A.pdf", width=10,height=10, onefile=FALSE)
+pdf("T-Cell.Figure.6A.pdf", width=10,height=10, onefile=FALSE)
 par(bg=NA)
 tsne.wtko
 dev.off()
@@ -498,7 +858,7 @@ tsne.cc            <- tsne.cc + xlab("") + ylab("") + coord_fixed() +
                       legend.key.height = unit(1.25, "cm"), axis.text.x=element_blank(), axis.text.y=element_blank()) + guides(colour = guide_legend(override.aes = list(size=5)))
 
 tsne.cc 
-pdf("T-Cell.Figure.3B.pdf", width=10,height=10, onefile=FALSE)
+pdf("T-Cell.Figure.4A.pdf", width=10,height=10, onefile=FALSE)
 par(bg=NA)
 tsne.cc
 dev.off()
@@ -545,7 +905,7 @@ tsne.rp            <- tsne.rp + xlab("") + ylab("") + coord_fixed() +
 tsne.rp
 
 
-pdf("T-Cell.Figure.3E.pdf", width=10,height=10, onefile=FALSE)
+pdf("T-Cell.Figure.5B.pdf", width=10,height=10, onefile=FALSE)
 par(bg=NA)
 tsne.rp 
 dev.off()
@@ -652,7 +1012,7 @@ legend               <- get_legend(tsne.m1.umi_mt_cc.wt.leg)
 
 
 
-pdf("T-Cell.Figure.Supp2.pdf", width=17.5,height=15, onefile=FALSE)
+pdf("T-Cell.Figure.Supp5.pdf", width=17.5,height=15, onefile=FALSE)
 par(bg=NA)
 plot_grid(tsne.before_after, legend, rel_widths = c(2,0.2))
 dev.off()

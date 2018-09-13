@@ -43,22 +43,28 @@ Two separate DEMs were calculated for the WT and WT+P0 samples. The WT only samp
 
 Here we outline the Seurat pipeline used for plotting and differential transcript identification [dropseq_seurat_splitDEMs_Plots.R](dropseq_seurat_splitDEMs_Plots.R).
 
-The RObj generated from the [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEMs.R) is used to extract (e.g. with GetCellEmbeddings) the required data for each of the plots in the figure. Custom tSNE plots were generated using ggplot2. Transcript abundance dotplots were generated from AverageExpression extracted from the Seurat object and ggplot2. Cluster trees were generated using clustree (Zappia & Oshlack, 2018). Differential transcript analysis was performed by comparing each cluster in turn to all others (FindAllMarkers) and using a log fold change threshold of > 0.7 and adjusted p value < 0.01. The heatmap (pHeatmap), used the same thresholds, with just the top 20 genes for each cluster selected.
+The RObj generated from the [dropseq_seurat_splitDEMs.R](dropseq_seurat_splitDEMs.R) is used to extract (e.g. with GetCellEmbeddings) the required data for each of the plots in the figure. Custom tSNE plots were generated using ggplot2. Transcript abundance dotplots were generated from AverageExpression extracted from the Seurat object and ggplot2. Cluster trees were generated using clustree (Zappia & Oshlack, 2018). Differential transcript analysis was performed by comparing each cluster (FindAllMarkers) and using an adjusted p value < 0.01. The heatmap (pHeatmap), used the same threshold, with just the top 20 genes for each cluster selected.
 
 
-Figure        | Output Filename            | Description
-------------- | -------------------------- | -----------
- 2            | T-Cell.Figure.2.pdf        | tSNE, classical cell markers, clustree and summary tSNE   
- 3A            | T-Cell.Figure.3A.pdf        | Heatmap unsupervised clustering of top 20 genes per cluster  
- 3B           | T-Cell.Figure.3B.pdf       | tSNE with cells coloured by cell cycle assignments  
- 3E           | T-Cell.Figure.3E.pdf       | tSNE with cells coloured by averaged ribosomal protein transcript levels
- 4A           | T-Cell.Figure.4A.pdf       | tSNE with cells coloured by genotype (WT and P0)
- Supp Fig 1   | T-Cell.Figure.Supp1.pdf    | Sequencing coverage for the Igf2 genomic region
- Supp Fig 2   | T-Cell.Figure.Supp2.pdf    | Cluster Mapping with and without cell cycle regression
- Supp Fig 3   | T-Cell.Figure.Supp3.pdf    | Resolution Effects on Cluster Calling (tSNE & clustree)
- Supp Table 1 | T-Cell.Table.Supp1.xlsx    | Table of Sequencing Metrics
- Supp Table 2 | T-Cell.Table.Supp2.csv     | Table of Top 20 genes per cluster vs all other clusters
-
+Figure        | Output Filename              | Description
+------------- | ---------------------------- | -----------
+ 2            | T-Cell.Figure.2.pdf          | tSNE, classical cell markers, clustree and summary tSNE   
+ 3            | T-Cell.Figure.3.pdf          | Heatmap unsupervised clustering of top 20 genes per cluster  
+ 4A           | T-Cell.Figure.4A.pdf         | tSNE with cells coloured by cell cycle assignments  
+ 5B           | T-Cell.Figure.5B.pdf         | tSNE with cells coloured by averaged ribosomal protein transcript levels
+ 6A           | T-Cell.Figure.6A.pdf         | tSNE with cells coloured by genotype (WT and P0)
+ 7A           | T-Cell.Figure.7A.pdf         | Differential transcript levels by cell type
+ 7B           | T-Cell.Figure.7B.pdf         | Differential transcript levels WT/P0 per cell type cluster
+ 7C           | T-Cell.Figure.7C.pdf         | Comparison of WT/P0 per cluster transcripts
+ Supp Fig 4   | T-Cell.Figure.Supp4.pdf      | Sequencing coverage for the Igf2 genomic region
+ Supp Fig 5   | T-Cell.Figure.Supp5.pdf      | Cluster Mapping with and without cell cycle regression
+ Supp Fig 6   | T-Cell.Figure.Supp6.pdf      | Resolution Effects on Cluster Calling (tSNE & clustree)
+ Supp Fig 7   | T-Cell.Figure.Supp7.pdf      | Differential transcript levels by cluster size
+ Supp Fig 8   | T-Cell.Figure.Supp8.pdf      | Differential transcript levels WT/P0 per cluster (by size)
+ Supp Fig 9   | T-Cell.Figure.Supp9.pdf      | Gender assignment
+ Supp Table 1 | T-Cell.Table.Supp1.xlsx      | Table of Sequencing Metrics
+ Supp Table 2 | T-Cell.SupplementalFiles.zip | Zip file of differential transcript level files
+ Supp Movie 1 | T-Cell.RibosomeMovie.mpg     | Ribosome structure with identified genes mapped on surface
 
 #### Ribosomal Protein Analysis ####
 A custom tool was created to classify whether ribosomal proteins are exposed on the surface or are internal to the ribosome. See [https://github.com/darogan/Ribosomal-Protein](https://github.com/darogan/Ribosomal-Protein) for more details. The output includes Pymol commands to render the structure showing the ribosomal proteins of interest.
@@ -76,8 +82,8 @@ SLX-7632 | N704  | WT         | 1341
 SLX-7632 | N705  | WT         |  813
 SLX-7632 | N706  | WT         | 1305
 SLX-7632 | N702  | P0         |	1300
-SLX-7632 | N703  | P0         |	675
-SLX-7632 | N707  | P0         |	610
+SLX-7632 | N703  | P0         |	 675
+SLX-7632 | N707  | P0         |	 610
 
 #### Alignment Rates ####											
 
