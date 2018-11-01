@@ -10,7 +10,10 @@
 <sup>4</sup> Department of Chemistry
 
 ## Publication ##
-Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>Submitted</i>
+Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>Front. Immunol.</i>, <b>9</b>:2523 [DOI](https://doi.org/10.3389/fimmu.2018.02523)
+
+<I>Preprint Version:</i><br>
+Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>bioRxiv</i>, 372862 [DOI](https://doi.org/10.1101/372862)
 
 ## Contact ##
 
@@ -119,8 +122,10 @@ Cluster By Size | Cluster Paper Number | WT  | P0   | Cell Type
 
 Description   | URL
 ------------- | ----------
-Publication   | [bioRxiv](http://), [Journal](http://) and [DOI](http://) <br>(<i>To be updated on publication</i>)
-Raw Data      | ArrayExpress EMBL-EBI [E-MTAB-6945](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-6945) <br>(<i>Data to be released on publication</i>)
+Publications   | [bioRxiv](https://doi.org/10.1101/372862)<BR> [Frontiers In Immunology](https://doi.org/10.3389/fimmu.2018.02523)
+Raw Data      | ArrayExpress EMBL-EBI [E-MTAB-6945](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-6945)
+
+
 
 ### Software Used ###
 
