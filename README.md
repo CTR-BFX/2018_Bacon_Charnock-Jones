@@ -10,10 +10,10 @@
 <sup>4</sup> Department of Chemistry
 
 ## Publication ##
-Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>Front. Immunol.</i>, <b>9</b>:2523 [DOI](https://doi.org/10.3389/fimmu.2018.02523)
+Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>Front. Immunol.</i>, <b>9</b>:2523 [[DOI]](https://doi.org/10.3389/fimmu.2018.02523)
 
 <I>Preprint Version:</i><br>
-Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>bioRxiv</i>, 372862 [DOI](https://doi.org/10.1101/372862)
+Bacon, W.A., Hamilton, R.S., Yu, Z., Kieckbusch, J., Hawkes, D., Krzak, A., Abell, C., Colucci, F. & Charnock-Jones, D.S. (2018) Single-Cell Analysis Identifies Thymic Maturation Delay in Growth-Restricted Neonatal Mice <i>bioRxiv</i>, 372862 [[DOI]](https://doi.org/10.1101/372862)
 
 ## Contact ##
 
