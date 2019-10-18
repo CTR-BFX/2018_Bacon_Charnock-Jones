@@ -42,6 +42,15 @@ Here we outline the Seurat pipeline used for the more computationally demanding 
 
 Two separate DEMs were calculated for the WT and WT+P0 samples. The WT only samples were used to calculate variable genes (FindVariableGenes), which were then used as input to generate the PCA (RunPCA), find clusters (FindClusters) and produce a tSNE (t-distributed stochastic neighbor embedding) visualisation (RunTSNE) from the combined WT and P0 sample DEM. FindClusters is run across multiple resolutions (0.2, 0.4, 0.6 0.8 and 1.0), each stored on the Seurat Object. Normalisation (NormalizeData), UMI and MT regression (FilterCells) were performed using Seurat. Cell cycle assignments were performed using SCRAN (Lun et al, 2016)(v1.6.9) on the combined WT+P0 DEM, using an intermediate SingleCellExperiment (v1.0.0) data structure, and then added back to the Seurat Object. Cell cycle genes were regressed out using a subtraction of G2M from S cell cycle scores per cell. The resulting Seurat data object is saved as an RObj for input into the plotting and differential analysis part of the pipeline.
 
+> Precalculated DEMs
+
+| Description | File Name |
+| ----------- | --------- |
+| WT & KO     | [SLX-7632.XXXXXXXXXX.dge.txt.gz](DEMs/SLX-7632.XXXXXXXXXX.dge.txt.gz)       |
+| WT Only     | [SLX-7632.XXXXXXXXXX.WT.dge.txt.gz](DEMs/SLX-7632.XXXXXXXXXX.WT.dge.txt.gz) |
+| KO Only     | [SLX-7632.XXXXXXXXXX.KO.dge.txt.gz](DEMs/SLX-7632.XXXXXXXXXX.KO.dge.txt.gz) |
+
+
 #### Seurat Pipeline (Part 2) ####
 
 Here we outline the Seurat pipeline used for plotting and differential transcript identification [dropseq_seurat_splitDEMs_Plots.R](dropseq_seurat_splitDEMs_Plots.R).
